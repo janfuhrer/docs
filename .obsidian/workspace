@@ -1,0 +1,102 @@
+{
+  "main": {
+    "id": "8c5f023a0a624189",
+    "type": "split",
+    "children": [
+      {
+        "id": "d79b731ac06d902c",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "kubernetes/helm.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1116056d01b2cf88",
+    "type": "split",
+    "children": [
+      {
+        "id": "07a27cc70c536266",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0e38a547a4261af4",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "c5bb555dbcdbb8c5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "636cd0c37c9ef36a",
+    "type": "split",
+    "children": [
+      {
+        "id": "f487ac71ebdce85e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0a37f2c376999355",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "kubernetes/helm.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "d79b731ac06d902c",
+  "lastOpenFiles": [
+    "kubernetes/helm.md",
+    "kubernetes/README.md",
+    "git/README.md",
+    "kubernetes/database.md",
+    "kubernetes/docker.md",
+    "kubernetes/java.md",
+    "kubernetes/kafka.md",
+    "kubernetes/velero.md",
+    "linux/clonezilla.md",
+    "linux/gpg.md"
+  ]
+}
