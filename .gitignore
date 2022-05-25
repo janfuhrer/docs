@@ -12,3 +12,5 @@ tags
 .DS_Store
 # Obsidian
 .obsidian/workspace
+# exclude local files
+local
