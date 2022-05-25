@@ -1,23 +1,25 @@
-# docs: kubernetes
-## snippets
-### cmdline without ps
+# docs: kubernetes/snippets
+#kubernetes #snippets 
+## cmdline without ps
 - try with PID 1, if the first process starts another binary like `tiny`, choose another low PID
 
 ```bash
 cat /proc/PID/cmdline | xargs -0 echo
 ```
 
-### kubectl auth
+## kubectl auth
 ```bash
 kubectl auth can-i get secret/${secretname} --as=system:serviceaccount:${namespace}:${serviceaccount} -n ${namespace}
 ```
 
-### get available tags from registry
+## get available tags from registry
 ```bash
 curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list 
 ```
 
-### loki filter
+## loki filter
+#loki
+
 ```bash
 # keycloak
 {clustername="clustername",app="keycloak"} |= "appname"
@@ -26,7 +28,9 @@ curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
 {clustername="clustername",namespace="-system",app_kubernetes_io_instance="ingress-class"} |= "app.domain"
 ```
  
-### ksniff
+## ksniff
+#ksniff
+
 ```bash
 # use right context
 kubectl config use-context ${k8s-context-name}
@@ -41,12 +45,14 @@ kubectl sniff -n ${namespace} ${pod} -o - > test.pcap
 /Applications/Wireshark.app/Contents/MacOS/Wireshark -r test.pcap
 ```
 
-### pvc stuck in terminating
+## pvc stuck in terminating
 ```bash
 kubectl patch pvc ${pvc-name} -p '{"metadata":{"finalizers":null}}'
 ```
 
-### HAProxy
+## HAProxy
+#HAProxy
+
 ```bash
 # show configfile
 haproxy -c -f haproxy.cfg
@@ -55,7 +61,8 @@ haproxy -c -f haproxy.cfg
 hatop -s /var/run/hap_<servicename>.sock
 ```
 
-### Tunnel-Service
+## Tunnel-Service
+#ssh
 1. Open local port and tunneling to the ssh-gateway
 ```bash
 ssh -L 30765:localhost:30765 sshGW

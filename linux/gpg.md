@@ -1,4 +1,5 @@
 # docs: linux/gpg
+#linux #gpg
 ## create key
 1. Schlüssel erstellen
 - (1) RSA und RAS

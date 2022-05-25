@@ -1,4 +1,5 @@
 # docs: linux/install-ubuntu-client
+#linux #ubuntu #client
 ## Vorbereitung Speichersystem
 Quelle: https://askubuntu.com/questions/918021/encrypted-custom-install
 

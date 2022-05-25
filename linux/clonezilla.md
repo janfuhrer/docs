@@ -1,4 +1,5 @@
 # docs: linux/clonezilla
+#linux #clonezilla
 ## create live usb
 > Official docs: https://clonezilla.org/liveusb.php
 > Download clonezilla stable (.zip):  https://clonezilla.org/downloads.php

@@ -1,6 +1,8 @@
-# docs: linux
-## snippets
-### openssl
+# docs: linux/snippets
+#linux #snippets 
+## openssl
+#openssl
+
 ```bash
 # pkcs§1
 openssl pkcs12 -nokeys -info -in cert.p12 -passin pass:PASS
@@ -12,12 +14,12 @@ openssl x509 -in cert.crt -text -noout
 openssl x509 -inform der -in CACert.crt -out intermediate.cer
 ```
 
-### nc
+## nc
 ```bash
 nc -zv 192.168.1.1 22
 ```
 
-### grep
+## grep
 **find pattern in directory-structure**
 `-r`: recursived
 `n`: line number
@@ -27,7 +29,9 @@ nc -zv 192.168.1.1 22
 grep -rnw '/path/to/somewhere/' -e 'pattern'
 ```
 
-### vim
+## vim
+#vim
+
 Link: https://vim.rtorr.com
 
 - `:set expandtab`: insert space when tab key is pressed
@@ -41,7 +45,7 @@ Example: `set expandtab tabstop=2 shiftwidth=2`
 - change to visual mode and mark all the lines
 - press `>>` to indent or `<<` de-indent
 
-### sed
+## sed
 - with macOS, a backup file must be specified with `-i` -> to overwrite the file directly use `-i''` 
 
 ```bash
@@ -50,6 +54,7 @@ sed -i '' 's/old/new/g' filename
 
 ## various
 ### nextcloud
+#nextcloud
 turn maintenance mode off
 
 ```bash

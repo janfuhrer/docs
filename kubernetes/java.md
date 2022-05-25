@@ -1,5 +1,8 @@
 # docs: kubernetes/java
+#kubernetes #java
 ## snippets
+#snippets 
+
 ### structure java logs
 ```bash
 kubectl logs pod | less -r
@@ -16,6 +19,8 @@ jstat -gcutil <pid>
 ```
 
 ## Springboot
+#springboot
+
 ### properties
 - override property with a ENV -> e.g. `imgix.api.domain` is `IMGIX_API_DOMAIN`
 

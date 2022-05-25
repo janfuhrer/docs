@@ -1,11 +1,11 @@
-# docs: git
-## snippets
-### sign last N commits
+# docs: git/snippets
+#git #snippets 
+## sign last N commits
 ```bash
 git rebase HEAD~3 --signoff
 ```
 
-### revert commit
+## revert commit
 If you have commit, but not pushed:
 
 ```bash
@@ -19,7 +19,7 @@ If you commit and push into repository:
 git revert HEAD
 ```
 
-### log
+## log
 ```bash
 # log with diff
 git log -p
@@ -28,7 +28,7 @@ git log -p
 git log --oneline
 ```
 
-### conflicts
+## conflicts
 1. pull each branch
 ```bash
 git fetch #optional

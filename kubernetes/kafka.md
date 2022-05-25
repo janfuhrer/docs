@@ -1,4 +1,5 @@
 # docs: kubernetes/kafka
+#kubernetes #kafka
 ## test producer connection to broker
 ### download java
 - download: https://java.com/en/download/help/linux_x64_install.html

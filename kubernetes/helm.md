@@ -1,6 +1,6 @@
 # docs: kubernetes/helm
-## snippets
-### manual upload of helm-chart
+#kubernetes #helm
+## manual upload of helm-chart
 ```bash
 # copy index.yaml file
 mc cp ${mc-location}/helm-charts/unstable/index.yaml ./
@@ -25,7 +25,7 @@ diff index.yaml packages/index.yaml
 mc cp ./packages/* ${mc-location}/helm-charts/unstable/
 ```
 
-### delete pvc on helm uninstall
+## delete pvc on helm uninstall
 By a `helm uninstall` PVCs only are deleted, if they are part of a **Deployment**. PVCs of a **Statefulset** are **not** deleted, there is no way with the helm-command (f.e. `--purge`) → Issue: https://github.com/helm/helm/issues/5156
 
 If we want helm not to delete a pvc from a deployment, we can use the annotation `"helm.sh/resource-policy": keep` (https://helm.sh/docs/howto/charts_tips_and_tricks/#tell-helm-not-to-uninstall-a-resource)

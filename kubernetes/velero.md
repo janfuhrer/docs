@@ -1,4 +1,5 @@
 # docs: kubernetes/velero
+#kubernetes #velero
 ## restore only pvc data from velero backup
 1. Create temporary namespace and restore a specific namespace
 

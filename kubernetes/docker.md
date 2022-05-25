@@ -1,6 +1,12 @@
 # docs: kubernetes/docker
-## snippets
-### Inspect
+#kubernetes #docker
+## dockerfile
+**best practices**
+- Each line in a Dockerfile creates a new layer -> combine commands by using &&
+- Insted of using `mv`, directly put files at the right place
+- When extracting archives, merge operations in a single layer
+- Using Multi-stages builds
+## inspect image
 Inspect an Image
 ```bash
 docker inspect <image>
@@ -18,16 +24,9 @@ brew install dive
 dive <image>:<tag>
 ```
 
-### network
+## network
 list linux-bridges (first download pakage)
 ```bash
 apt-get install bridge-utils
 brctl show
 ```
-
-## dockerfile
-**best practices**
-- Each line in a Dockerfile creates a new layer -> combine commands by using &&
-- Insted of using `mv`, directly put files at the right place
-- When extracting archives, merge operations in a single layer
-- Using Multi-stages builds
