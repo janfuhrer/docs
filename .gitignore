@@ -10,3 +10,5 @@ Session.vim
 tags
 # Apple
 .DS_Store
+# Obsidian
+.obsidian/workspace
