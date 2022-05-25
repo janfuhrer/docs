@@ -1,4 +1,22 @@
-# docs: kubernetes/FairWindsOps
+# docs: kubernetes/security
+#kubernetes #security
+
+## nuclei
+https://github.com/projectdiscovery/nuclei/
+
+- security check for website
+- scanning for a variety of protocols
+
+```bash
+nuclei -u example.com
+```
+
+## SSLLabs
+https://www.ssllabs.com/ssltest
+
+- check TLS configuration of website
+
+## FairWindsOps
 #nova #pluto #goldilocks #polaris
 
 ## nova
