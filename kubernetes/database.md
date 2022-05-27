@@ -3,7 +3,7 @@
 ## postgresql
 ```bash
 # login
-psql -h ${hostname} -p ${port} -U ${user} -d ${dbname}`
+psql -h ${hostname} -p ${port} -U ${user} -d ${dbname}
 ```
 
 **Get all relations**
@@ -40,7 +40,7 @@ DO $$ DECLARE r RECORD; BEGIN  FOR r IN (SELECT tablename FROM pg_tables WHERE s
 sqlcmd -S ${hostname},${port} -U ${user} -P ${password}
 
 # use database
-USE wiki;
+USE ${database};
 go
 
 # list tables
@@ -49,7 +49,7 @@ go
 ```
 
 ## some sql commands
-```bash
+```sql
 SELECT * FROM Customers WHERE CustomerName LIKE 'a%'; // beginning with a
 SELECT * FROM Customers WHERE CustomerName LIKE '%a'; // ending with a
 SELECT * FROM Customers WHERE CustomerName LIKE '%or%'; // have or on any position

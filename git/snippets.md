@@ -55,7 +55,7 @@ git diff
 git stash 
 
 # add files
-git add <files>
+git add ${files}
 
 # show diff
 git diff --staged

@@ -1,6 +1,7 @@
 # docs: kubernetes/snippets
 #kubernetes #snippets 
 ## cmdline without ps
+- get cmdline in linux file structure `/proc`
 - try with PID 1, if the first process starts another binary like `tiny`, choose another low PID
 
 ```bash
@@ -31,6 +32,8 @@ curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
 ## ksniff
 #ksniff
 
+Github: https://github.com/eldadru/ksniff
+
 ```bash
 # use right context
 kubectl config use-context ${k8s-context-name}
@@ -58,17 +61,31 @@ kubectl patch pvc ${pvc-name} -p '{"metadata":{"finalizers":null}}'
 haproxy -c -f haproxy.cfg
 
 # show socket information
-hatop -s /var/run/hap_<servicename>.sock
+hatop -s /var/run/hap_${servicename}.sock
 ```
 
-## Tunnel-Service
+## tunnel-service
 #ssh
 1. Open local port and tunneling to the ssh-gateway
 ```bash
-ssh -L 30765:localhost:30765 sshGW
+ssh -L 30765:localhost:30765 ${ssh-gateway}
 ```
 2. Start a port-forward
 ```bash
 kubectl get svc
-kubectl port-forward svc/<service> 30765:80
+kubectl port-forward svc/${service} 30765:80
+```
+
+### nextcloud
+#nextcloud
+
+- execute php commands in docker container
+```bash
+kubectl exec -it -n nextcloud ${pod} -- bash
+
+## turn maintenance mode off
+su -s /bin/bash www-data -c "php occ maintenance:mode --off"
+
+## add missing indices after upgrade
+su -s /bin/bash www-data -c "php occ db:add-missing-indices"
 ```

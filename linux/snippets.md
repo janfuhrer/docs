@@ -4,29 +4,32 @@
 #openssl
 
 ```bash
-# pkcs§1
-openssl pkcs12 -nokeys -info -in cert.p12 -passin pass:PASS
+# pkcs12
+openssl pkcs12 -nokeys -info -in cert.p12 -passin pass:${password}
 
 # x509
 openssl x509 -in cert.crt -text -noout
 
 # der to base64
-openssl x509 -inform der -in CACert.crt -out intermediate.cer
+openssl x509 -inform der -in cert-der.crt -out cert-base64.crt
 ```
 
 ## nc
+- `-v`: verbose
+- `-z`: just scan for listening daemons, without sending any data to them
+
 ```bash
-nc -zv 192.168.1.1 22
+nc -zv ${ip} ${port}
 ```
 
 ## grep
 **find pattern in directory-structure**
-`-r`: recursived
-`n`: line number
-`w`: math the whole word
+- `-r`: recursived
+- `n`: line number
+- `w`: math the whole word
 
 ```bash
-grep -rnw '/path/to/somewhere/' -e 'pattern'
+grep -rnw '${path}' -e 'pattern'
 ```
 
 ## vim
@@ -49,24 +52,16 @@ Example: `set expandtab tabstop=2 shiftwidth=2`
 - with macOS, a backup file must be specified with `-i` -> to overwrite the file directly use `-i''` 
 
 ```bash
-sed -i '' 's/old/new/g' filename
+sed -i '' 's/old/new/g' ${filename}
 ```
 
 ## various
-### nextcloud
-#nextcloud
-turn maintenance mode off
-
-```bash
-su -s /bin/bash www-data -c "php occ maintenance:mode --off"
-```
-
 ### password
 > If a User has specific characters in his password (like `$`), the password can't be set with the command `passwd`. In this instruction, the password-hash is manually generate and set in the file `/etc/shadow`.
 
 Create user:
 ```bash
-useradd -g <GID> -u <UID> -c "<COMMENT>" -d <HOME-DIRECTORY> -s /bin/bash <USERNAME>
+useradd -g ${gid} -u ${uid} -c "${comment}" -d ${home-directory} -s /bin/bash ${username}
 ```
 
 Generate Password-Hash (`$` must be set!):

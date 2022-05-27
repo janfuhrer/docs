@@ -1,5 +1,13 @@
 # docs: kubernetes/velero
 #kubernetes #velero
+
+Docs: https://velero.io/docs/main/
+
+install
+```bash
+brew install velero
+```
+
 ## restore only pvc data from velero backup
 1. Create temporary namespace and restore a specific namespace
 
@@ -17,8 +25,8 @@ kubectl scale -n temp deployment ${deployment} --replicas 0
 
 2. Start a debug pod and copy all data from a pvc to the local machine
 
-- pv-pod.yaml
-```bash
+- `pv-pod.yaml`
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -59,19 +67,17 @@ kubectl delete ns temp
 
 ## restore only certificates from velero backup
 - only kubernetes tls certificates
-
 ```bash
 kubectl create ns temp
 
 velero restore create --from-backup ${backupname} --include-namespaces ${namespace} --include-resources secrets --namespace-mappings ${namespace}:temp --wait
 
 kubectl get secrets -n temp ${secretname} -o yaml > cert.yaml
-vim cert.yaml
+
 kubectl apply -f cert.yaml -n ${namespace}
 ```
 
 - cert-manager resources
-
 ```bash
 velero restore create --from-backup ${backupname} --include-namespaces ${namespace} --include-resources '*.cert-manager.io' --exclude-resources=orders.acme.cert-manager.io,challenges.acme.cert-manager.io,certificaterequests.cert-manager.io --wait
 ```

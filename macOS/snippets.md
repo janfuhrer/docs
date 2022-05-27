@@ -64,14 +64,14 @@ Get Disk-Number:
 diskutil list
 ```
 
-### Backup SD-Card
+### backup SD-Card
 1. Save SD-Card to Image (f.e. disk3 to rpi-image.gz):
 ```bash
 sudo dd bs=4m if=/dev/disk3 | gzip > ~/Desktop/rpi-image.gz
 ```
 Um den Status des Kopiervorgangs anzuzeigen, kann die folgende Tastenkombination verwendet werden: CTRL + T
 
-### Restore SD-Card
+### restore SD-Card
 1. Umount disk:
 ```bash
 diskutil umountDisk /dev/disk3
@@ -99,9 +99,15 @@ vim ~/.vimrc
 ```
 
 ### EJSON
+Github: https://github.com/Shopify/ejson
+
+install
 ```bash
-sudo gem install ejson
+brew tap shopify/shopify
+brew install ejson
+```
+
+```bash
 sudo mkdir -p /opt/ejson/keys
-sudo chgrp localaccounts /opt/ejson/keys
-sudo chmod 770 /opt/ejson/keys
+sudo chown -R $(whoami) /opt/ejson
 ```

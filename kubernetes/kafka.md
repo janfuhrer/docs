@@ -14,14 +14,14 @@ cd kafka-3.1.0-src
 ```
 3. Copy cluster CA certificate in a file `ca.crt`
 ```bash
-kubectl describe kafkas.kafka.strimzi.io ${strimzi-cluster-name}
+kubectl get secret ${strimzi-cluster-name}-cluster-ca-cert -o jsonpath='{.data.ca\.crt}' | base64 -d > ca.crt
 ```
 4. Create a truststore with this ca-certificate
 ```bash
 keytool -import -trustcacerts -file ca.crt -keystore truststore.jks -storepass kafka4ever
 ```
 5. create properties file `client.properties`
-```
+```properties
 security.protocol=SSL
 ssl.truststore.location=./truststore.jks
 ssl.truststore.password=kafka4ever
@@ -49,7 +49,7 @@ spec:
 
 ### test with scram-sha-512 and authorization simple
 1. update properties file `client.properties`
-```
+```properties
 security.protocol=SASL_SSL
 ssl.truststore.location=./truststore.jks
 ssl.truststore.password=kafka4ever

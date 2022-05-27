@@ -13,7 +13,7 @@ kubectl logs pod | less -r
 ps -ef | grep -i xmx
 
 jstat -heap <pid>
---> count all numbers ending with C
+# --> count all numbers ending with C
 
 jstat -gcutil <pid>
 ```
@@ -45,7 +45,7 @@ curl -s ... | jq '' | grep mail | sort
 - open actuator in browser on `localhost:10080/actuator/env` (login with username/password)
 
 ```bash
-ssh -L 10080:localhost10080 sshGW
+ssh -L 10080:localhost:10080 ${ssh-host}
 
 kubectl port-forward ${pod} 10080:8080
 ```
