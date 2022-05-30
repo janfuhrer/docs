@@ -78,7 +78,7 @@ polaris dashboard --port 8080
 ```
 
 ## checkov
-https://github.com/bridgecrewio/checkov
+Github: https://github.com/bridgecrewio/checkov
 
 install
 ```bash
@@ -93,7 +93,7 @@ checkov -d ${directory} --compact --quiet
 
 
 ## kics
-https://github.com/Checkmarx/kics
+Github: https://github.com/Checkmarx/kics
 
 install
 ```bash

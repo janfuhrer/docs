@@ -1,5 +1,15 @@
 # docs: linux/snippets
 #linux #snippets 
+
+## links
+- ExplainShell: https://explainshell.com/
+- Showthedocs: http://showthedocs.com
+- Shell Parameter Expansion:
+	- https://www.gnu.org/software/bash/manual/bash.html#Shell-Parameter-Expansion
+	- https://wiki-dev.bash-hackers.org/syntax/pe
+- Regex: https://regex101.com
+- YAML multiline: https://yaml-multiline.info
+
 ## openssl
 #openssl
 

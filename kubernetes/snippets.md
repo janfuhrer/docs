@@ -1,11 +1,21 @@
 # docs: kubernetes/snippets
 #kubernetes #snippets 
+
+## links
+- Prometheus Relabeler: https://relabeler.promlabs.com
+
 ## cmdline without ps
 - get cmdline in linux file structure `/proc`
 - try with PID 1, if the first process starts another binary like `tiny`, choose another low PID
 
 ```bash
 cat /proc/PID/cmdline | xargs -0 echo
+```
+
+## kubernetes secret & base64
+- create a secret without the trailing `\n`
+```bash
+echo -n "${password}" | base64
 ```
 
 ## kubectl auth
