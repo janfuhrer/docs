@@ -38,6 +38,15 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 plugins=(ssh-agent git compleat zsh-syntax-highlighting zsh-autosuggestions kubectl gpg-agent golang macos)
 ```
 
+## remove quarantine attributes
+```bash
+## single file
+xattr -d com.apple.quarantine ${FILE}
+
+## directory
+xattr -r -d com.apple.quarantine ${DIRECTORY}
+```
+
 ## problems with external HD
 **Problem**
 - APFS on external HD is corrupt, spaceManager gives error, HD not mountable
