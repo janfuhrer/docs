@@ -23,9 +23,28 @@ echo -n "${password}" | base64
 kubectl auth can-i get secret/${secretname} --as=system:serviceaccount:${namespace}:${serviceaccount} -n ${namespace}
 ```
 
+## curl kubernetes api
+- example with ServiceAccount
+
+```bash
+SERVICE_ACCOUNT=
+NAMESPACE=
+API=
+
+# get token of SA
+SECRET=$(kubectl get serviceaccount ${SERVICE_ACCOUNT} -n ${NAMESPACE} -o json | jq -Mr '.secrets[].name | select(contains("token"))')
+TOKEN=$(kubectl get secret ${SECRET} -n ${NAMESPACE} -o json | jq -Mr '.data.token' | base64 -d)
+
+# get k8s-api ca cert
+kubectl get secret ${SECRET} -n ${NAMESPACE} -o json | jq -Mr '.data["ca.crt"]' | base64 -d > ca.crt
+
+# example request for a secret
+curl -s https://${API}/api/v1/namespaces/${NAMESPACE}/secrets/${SECRET} --header "Authorization: Bearer $TOKEN" --cacert ca.crt | jq -Mr '.data'
+```
+
 ## get available tags from registry
 ```bash
-curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list 
+curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
 ```
 
 ## loki filter

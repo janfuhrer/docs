@@ -35,6 +35,24 @@ DO $$ DECLARE r RECORD; BEGIN  FOR r IN (SELECT tablename FROM pg_tables WHERE s
 - `\q`: quit psql
 
 ## mssql
+kubernetes debugger manifest
+```bash
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mssql
+spec:
+  containers:
+  - name: debugger
+    image: mcr.microsoft.com/mssql-tools
+    command: ['sleep', '3600']
+    resources:
+      requests:
+        cpu: 0
+        memory: 0
+```
+
+commands
 ```bash
 # login
 sqlcmd -S ${hostname},${port} -U ${user} -P ${password}
