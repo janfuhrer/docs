@@ -32,6 +32,16 @@ openssl x509 -inform der -in cert-der.crt -out cert-base64.crt
 nc -zv ${ip} ${port}
 ```
 
+### send udp packages between hosts
+- client 1
+```bash
+nc -u -v -l ${ip} 2000
+```
+- client 2
+```bash
+nc -u ${ip} 2000
+```
+
 ## grep
 **find pattern in directory-structure**
 - `-r`: recursived
@@ -40,6 +50,28 @@ nc -zv ${ip} ${port}
 
 ```bash
 grep -rnw '${path}' -e 'pattern'
+```
+
+## send specifig packages
+install
+```bash
+apt install nmap
+```
+
+start listening on remote side
+```bash
+# listen for ICMP type 3 packets
+sudo tcpdump  'icmp[0] = 3' -i ${interface}
+sudo tcpdump  'icmp[0] = 3 and (host ${source-ip})' -i ${interface}
+```
+
+send on the other side
+```bash
+# send ICMP type 3 packets
+sudo nping --icmp-type 3 ${remote-ip}
+
+# send tcp packages with data-length 1000
+sudo nping --tcp -p 22 --data-length 1000 ${remote-ip}
 ```
 
 ## vim
