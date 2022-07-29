@@ -55,7 +55,7 @@ curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
 {clustername="clustername",app="keycloak"} |= "appname"
 
 # ingress
-{clustername="clustername",namespace="-system",app_kubernetes_io_instance="ingress-class"} |= "app.domain"
+{clustername="clustername",namespace="-system",instance="ingress-class"} |= "app.domain"
 ```
  
 ## ksniff

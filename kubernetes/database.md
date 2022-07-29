@@ -34,6 +34,13 @@ DO $$ DECLARE r RECORD; BEGIN  FOR r IN (SELECT tablename FROM pg_tables WHERE s
 - `\timing`: turn on or off the query execution time
 - `\q`: quit psql
 
+### Redirect output to file
+```sql
+db=> \o out.txt
+db=> select * from table;
+db=> \o
+```
+
 ## mssql
 kubernetes debugger manifest
 ```bash
