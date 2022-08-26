@@ -20,8 +20,16 @@ openssl pkcs12 -nokeys -info -in cert.p12 -passin pass:${password}
 # x509
 openssl x509 -in cert.crt -text -noout
 
+# x509: get specific fields
+openssl x509 -in cert.crt -subject -issuer -startdate -enddate -noout
+
 # der to base64
 openssl x509 -inform der -in cert-der.crt -out cert-base64.crt
+```
+
+- get tls certificate of remote host
+```bash
+echo | openssl s_client -showcerts -servername ${host} -connect ${host}:443 2>/dev/null | openssl x509 -inform pem -noout -text
 ```
 
 ## nc
