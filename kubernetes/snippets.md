@@ -12,6 +12,11 @@
 cat /proc/PID/cmdline | xargs -0 echo
 ```
 
+## show environment of running process
+```bash
+cat /proc/PID/environ | tr '\0' '\n'
+```
+
 ## kubernetes secret & base64
 - create a secret without the trailing `\n`
 ```bash
