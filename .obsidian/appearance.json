@@ -1,5 +1,7 @@
 {
   "cssTheme": "",
   "theme": "moonstone",
-  "translucency": false
+  "translucency": false,
+  "accentColor": "",
+  "baseFontSize": 16
 }

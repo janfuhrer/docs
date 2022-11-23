@@ -5,6 +5,11 @@
 git rebase HEAD~3 --signoff
 ```
 
+## sign last commit
+```bash
+git commit --amend --author="NAME <email>"
+```
+
 ## revert commit
 If you have commit, but not pushed:
 

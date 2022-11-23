@@ -16,3 +16,13 @@ curl http://localhost:9200/_cat/health\?v -u elastic:${PASSWORD}
 # get indices (column health should be "green")
 curl http://localhost:9200/_cat/indices\?v -u elastic:${PASSWORD}
 ```
+
+## create user password
+
+```bash
+# create user locally
+elasticsearch-users useradd ${USERNAME} -p 'password'
+
+# get password
+cat /usr/local/etc/elasticsearch/users
+```

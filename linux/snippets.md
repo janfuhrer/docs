@@ -105,6 +105,18 @@ Example: `set expandtab tabstop=2 shiftwidth=2`
 sed -i '' 's/old/new/g' ${filename}
 ```
 
+## hosts
+- lookup via hosts-file
+```bash
+getent hosts $(hostname)
+```
+
+## extract deb file
+- extract to the current directory
+```bash
+dpkg-deb -xv ${file.deb} .
+```
+
 ## various
 ### password
 > If a User has specific characters in his password (like `$`), the password can't be set with the command `passwd`. In this instruction, the password-hash is manually generate and set in the file `/etc/shadow`.

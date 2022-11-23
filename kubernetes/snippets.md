@@ -52,6 +52,12 @@ curl -s https://${API}/api/v1/namespaces/${NAMESPACE}/secrets/${SECRET} --header
 curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
 ```
 
+## capsule
+- get storage requests over all namespaces of a tenant (works only with `Gi`)
+```bash
+kubectl get tenants.capsule.clastix.io ${TENANT_NAME} -o jsonpath='{.status.namespaces}' | jq -rc '.[]' | while read i; do; kubectl get pvc -n $i -o jsonpath='{.items[*].status.capacity.storage}' | sed "s/Gi/\n/g"; done | awk '{s+=$1} END {printf "%.0f", s}'
+```
+
 ## loki filter
 #loki
 
@@ -123,3 +129,10 @@ su -s /bin/bash www-data -c "php occ maintenance:mode --off"
 ## add missing indices after upgrade
 su -s /bin/bash www-data -c "php occ db:add-missing-indices"
 ```
+
+## binary
+- check if dynamically linked
+```bash
+ldd ${binary}
+```
+-> e.g. with go, there can be linked dependencies to glibc
