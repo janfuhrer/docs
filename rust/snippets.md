@@ -13,7 +13,7 @@ rustup update
 ```
 
 ## cargo
-```rust
+```bash
 # build
 cargo build
 

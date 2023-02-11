@@ -23,6 +23,11 @@ cat /proc/PID/environ | tr '\0' '\n'
 echo -n "${password}" | base64
 ```
 
+- get secret base64 decoded (replace `.data.key`)
+```bash
+kubectl get secret ${secretname} -o go-template="{{.data.key | base64decode}}"
+```
+
 ## kubectl auth
 ```bash
 kubectl auth can-i get secret/${secretname} --as=system:serviceaccount:${namespace}:${serviceaccount} -n ${namespace}
@@ -49,7 +54,7 @@ curl -s https://${API}/api/v1/namespaces/${NAMESPACE}/secrets/${SECRET} --header
 
 ## get available tags from registry
 ```bash
-curl -X GET ${user}$:${pass} https://${registry}/v2/${repository}/tags/list
+curl -X GET -u ${user}:${pass} https://${registry}/v2/${repository}/tags/list
 ```
 
 ## capsule
