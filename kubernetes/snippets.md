@@ -30,7 +30,11 @@ kubectl get secret ${secretname} -o go-template="{{.data.key | base64decode}}"
 
 ## kubectl auth
 ```bash
+# serviceaccount
 kubectl auth can-i get secret/${secretname} --as=system:serviceaccount:${namespace}:${serviceaccount} -n ${namespace}
+
+# check group access with idp
+kubectl auth can-i get secrets --as=dev --as-group=${groupname} -n ${namespace}
 ```
 
 ## curl kubernetes api

@@ -124,7 +124,7 @@ Configuration hardening:
 apiVersion: kubelet.config.k8s.io/v1beta1
 authentication:
   anonymous:
-	# "Unauthorized" if curl on port 10250
+    # "Unauthorized" if curl on port 10250
     enabled: false
   webhook:
     enabled: true
@@ -216,15 +216,17 @@ export DOCKER_HOST="tcp://<ip-address>:2375"
 ### Secure Docker Daemon
 - create "Daemon Configuration File" under `/etc/docker/daemon.json`
 - default port for encrypted traffic is 2376
+- `tls: true` enables authentication
+- `tlsverify: true` enables authorization
 
 ```json
 {
   "debug": true,
   "hosts": ["tcp://<ip-address>:2376"],
-  "tls": true, // enables encryption
+  "tls": true,
   "tlscert": "/var/docker/server.pem",
   "tlskey": "/var/docker/serverkey.pem",
-  "tlsverify": true, // enables authentication
+  "tlsverify": true,
   "tlscacert": "/var/docker/caserver.pem"
 }
 ```
@@ -431,11 +433,11 @@ grep -w <syscall-number> /usr/include/asm/uinstd_64.h
 apiVersion: v1
 kind: Pod
 metadata:
-	name: test
+  name: test
 spec:
-	securityContext:
-		seccompProfile:
-			type: RuntimeDefault
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
 (...)
 ```
 
@@ -447,12 +449,12 @@ mkdir -p /var/lib/kubelet/seccomp/profiles
 
 cat < EOF >> /var/lib/kubelet/seccomp/profiles/audit.json
 {
-	"defaultAction": "SCMP_ACT_LOG"
+  "defaultAction": "SCMP_ACT_LOG"
 }
 
 cat < EOF >> /var/lib/kubelet/seccomp/profiles/violation.json
 {
-	"defaultAction": "SCMP_ACT_ERRNO"
+  "defaultAction": "SCMP_ACT_ERRNO"
 }
 ```
 
@@ -462,12 +464,12 @@ cat < EOF >> /var/lib/kubelet/seccomp/profiles/violation.json
 apiVersion: v1
 kind: Pod
 metadata:
-	name: test
+  name: test
 spec:
-	securityContext:
-		seccompProfile:
-			type: Localhost
-			localhostProfile: profiles/audit.json
+  securityContext:
+    seccompProfile:
+      type: Localhost
+      localhostProfile: profiles/audit.json
 (...)
 ```
 
@@ -517,9 +519,9 @@ ln -s /etc/apparmor.d/<file> /etc/apparmor.d/disable/
 apiVersion: v1
 kind: Pod
 metadata:
-	name: test
-	annotations:
-		container.apparmor.security.beta.kubernetes.io/<container-name>: localhost/<profile-name>
+  name: test
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/<container-name>: localhost/<profile-name>
 spec:
 (...)
 ```
@@ -635,7 +637,7 @@ allow {
 apiVersion: node.k8s.io/v1beta1
 kind: RuntimeClass
 metadata:
-	name: gvisor
+  name: gvisor
 handler: runsc
 ```
 
@@ -645,9 +647,9 @@ handler: runsc
 apiVersion: v1
 kind: pod
 metadata:
-	name: nginx
+  name: nginx
 spec:
-	runtimeClassName: gvisor
+  runtimeClassName: gvisor
 (...)
 ```
 
@@ -761,4 +763,121 @@ trivy image --input alpine.tar --format json --output /root/alpine.json
 
 # Monitoring, Logging and Runtime Security
 
-tbd
+## Falco
+
+> The Falco Project, originally created by [Sysdig](https://sysdig.com/), is an incubating [CNCF](https://cncf.io/) open source cloud native runtime security tool. Falco makes it easy to consume kernel events, and enrich those events with information from Kubernetes and the rest of the cloud native stack. Falco can also be extended to other data sources by using plugins. Falco has a rich set of security rules specifically built for Kubernetes, Linux, and cloud-native. If a rule is violated in a system, Falco will send an alert notifying the user of the violation and its severity.
+
+**Installation options**
+- as package in linux
+- as a daemonset with helm
+
+```bash
+# check if installed as packet
+systemctl status falco
+
+# following falco systemd logs
+journalctl -fu falco
+```
+
+### Falco Rules
+
+Rule-Structure (see [Rule fields](https://falco.org/docs/reference/rules/rule-fields/)):
+
+```yaml
+- rule: <name of the rule>
+  desc: <detailed description of the rule>
+  condition: <when to filter events matching the rule>
+  output: <output to be generated for the event>
+  priority: <severity of the event>
+```
+
+Example Rule:
+
+```yaml
+- rule: Detect Shell inside a container
+  desc: Alert if a shell such as bash is open inside the container
+  condition: container and proc.name in (linux_shells)
+  output: Bash Shell Opened (user=%user.name container=%container.id)
+  priority: WARNING
+- list: linux_shells
+  ietems: [bash, zsh, ksh, sh, csh]
+- macro: container
+  condition: container.id != host
+```
+
+See [Supported Fields](https://falco.org/docs/reference/rules/supported-fields/) and [Default Macros](https://falco.org/docs/rules/default-macros/)
+
+### Falco Configuration Files
+
+- see [Falco Configuration Options](https://falco.org/docs/reference/daemon/config-options/)
+- default configuration file `/etc/falco/falco.yaml` (is logged at startup/ defined systemd file)
+- includes rule-files with `rules_file`
+- logging default is `text`, can be changed to `json`
+- output channels:
+	- `stdout`: enabled by default
+	- `file`: log to a file
+	- `program_output`: external programs like Slack
+	- `http`: log to an http endpoint
+- overwrite existing rules or add custom rules in the file `/etc/falco/falco_rules.local.yaml`
+
+```bash
+# hot reload: reload falco engine & rules without restart falco service
+kill -1 $(cat /var/run/falco.pid)
+```
+
+## Mutable vs Immutable Infrastructure
+
+- **Inplace Updates**: Infrastructure remains the same, software changes (Mutable Infrastructure) -> can lead to **Configuration Drifts** 
+- **Immutable Infrastructure**: Replace whole infrastructure instead of only the software (Immutable Infrastructure)
+
+**Ensure Immutability of Containers at Runtime**
+- add securityContext `readOnlyRootFilesystem: true`
+- add `emptyDir: {}` directories to allow the container to write files in needed directories
+- `privileged` has to be `false` -> can bypass this settings!
+
+## Audit Logs
+
+- disabled by default
+- Available Backends: Log-Backend or Webhook-Backend (e.g. for Falco)
+
+**Event-Types**
+- RequestReceived
+- ResponseStarted
+- ResponseComplete
+- Panic
+
+### Enable Auditing
+
+- add kube-apiserver parameter `--audit-log-path=/var/log/k8-audit.log` (Log-Backend)
+- use audit-policy-file: `--audit-policy-file=/etc/kubernetes/audit-policy.yaml`
+- enable retention on age (in days): `--audit-log-maxage=10`
+- enable retention on file count: `--audit-log-maxbackup=5`
+- enable retention on file size (in MB): `--audit-log-maxsize=100`
+
+### Audit Policies
+
+- create audit policies in the audit policy file defined with `--audit-policy-file`
+
+```yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+omitStages: ["RequestReceived"] # don't record specific events (Optional)
+rules:
+- namespaces: ["prod-namespace"]
+  verbs: ["delete"]
+  resources:
+  - groups: " "
+    resources: ["pods"]
+    resourceNames: ["webapp-pod"]
+  level: Metadata # Available Options: None, Metadata, Request, RequestResponse
+- level: Metadata
+  resources:
+  - groups: " "
+    resources: ["secrets"]
+```
+
+Search for Policy, which triggers the event:
+
+```bash
+grep -ir 'Package management process launched in container' /etc/falco/
+```
