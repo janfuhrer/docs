@@ -118,6 +118,8 @@ ps -aux | grep kubelet
 vim /var/lib/kubelet/config.yaml
 ```
 
+- Example: A Kubelet-Parameter `--protect-kernel-defaults` leads to Configuration `protectKernelDefaults`
+
 Configuration hardening:
 
 ```yaml
@@ -162,11 +164,14 @@ kubectl get nodes
 
 ```bash
 kubectl drain node-1
+
+ssh node-1
 apt-get upgrade kubeadm=1.26.0-00
 kubeadm upgrade node
 apt-get upgrade kubelet=1.26.0-00
 systemctl daemon-reload
 systemctl restart kubelet
+
 kubectl uncordon node-1
 ```
 
@@ -254,6 +259,21 @@ All the control plane components (API server, controller manager, kubelet, sched
 ## API Server
 
 [How to Diagnose a Crashed API Server](https://github.com/kodekloudhub/community-faq/blob/main/docs/diagnose-crashed-apiserver.md)
+
+```bash
+# Restart `kubelet` so you don't have to wait too long in the following steps
+# restart kubelet
+systemctl restart kubelet
+
+# Determine if the kubelet can even start the API server
+# watch output for 60 seconds
+journalctl -fu kubelet | grep apiserver
+
+# Kubelet does launch API server, but it crashes immediately.
+# -> look into the logs
+crictl ps | grep api
+crictl logs <container-id>
+```
 
 # System Hardening
 
@@ -489,7 +509,7 @@ $ Y
 cat /sys/kernel/security/apparmor/profiles
 
 # see all loaded profiles
-aa-status
+aa-status # or apparmor_status
 ```
 
 ### Create custom AppArmor profiles
@@ -853,6 +873,34 @@ kill -1 $(cat /var/run/falco.pid)
 - enable retention on age (in days): `--audit-log-maxage=10`
 - enable retention on file count: `--audit-log-maxbackup=5`
 - enable retention on file size (in MB): `--audit-log-maxsize=100`
+- -> add volumes and volumeMounts!
+
+```yaml
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - (...)
+    - --audit-policy-file=/etc/kubernetes/prod-audit.yaml
+    - --audit-log-path=/var/log/prod-secrets.log
+    - --audit-log-maxage=30
+    volumeMounts:
+    - mountPath: /etc/kubernetes/prod-audit.yaml
+      name: audit
+      readOnly: true
+    - mountPath: /var/log/prod-secrets.log
+      name: audit-log
+      readOnly: false
+  volumes:
+  - name: audit
+    hostPath:
+      path: /etc/kubernetes/prod-audit.yaml
+      type: File
+  - name: audit-log
+    hostPath:
+      path: /var/log/prod-secrets.log
+      type: FileOrCreate
+```
 
 ### Audit Policies
 
@@ -880,4 +928,206 @@ Search for Policy, which triggers the event:
 
 ```bash
 grep -ir 'Package management process launched in container' /etc/falco/
+```
+
+
+# KillserShell
+
+Some other snippets, learned through the CKS Simulator on [killer.sh](https://killer.sh/cks)
+
+- get all context names of kubeconfig
+```bash
+kubectl config get-contexts -o name
+```
+
+- falco check syslog and get pod infos
+```bash
+cat /var/log/syslog | grep falco | grep nginx | grep process
+crictl ps -id 7a5ea6a080d1
+crictl pods -id 7a5ea6a080d1
+```
+
+ - change api-server service from NodePort to ClusterIP
+```bash
+# change kube-api parameter as follow
+--kubernetes-service-node-port=31000 # delete or set to 0
+
+# delete the kubernetes service
+kubectl delete svc kubernetes
+```
+
+- enable Pod Security Standard Rules
+```bash
+# edit namespace and add labels
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    kubernetes.io/metadata.name: team-red
+    pod-security.kubernetes.io/enforce: baseline # add enforce label
+  name: team-red
+
+# delete running pods in namespace to enforce the rule for those
+```
+
+- kube-bench
+```bash
+# on master nodes
+kube-bench run --targets=master
+
+# on worker nodes
+kube-bench run --targets=node
+```
+
+- kubelet add clientCAFile config
+```yaml
+# /var/lib/kubelet/config.yaml
+apiVersion: kubelet.config.k8s.io/v1beta1
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    cacheTTL: 0s
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+```
+
+- check hash of binary
+ ```bash
+# echo hash with name of packag, check with binary
+echo "$(cat archive.tar.gz.sha256) filename" | sha512sum --check
+```
+
+- OPA
+```bash
+# get crds & objects
+kubectl get crd | grep gatekeeper
+kubectl get constraint
+kubectl get constrainttemplate
+
+# test pod
+kubectl run opa-test --image=very-bad-registry.com/image
+```
+
+```yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: BlacklistImages
+metadata:
+...
+spec:
+  match:
+    kinds:
+    - apiGroups:
+      - ""
+      kinds:
+      - Pod
+```
+
+```yaml
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+...
+spec:
+  crd:
+    spec:
+      names:
+        kind: BlacklistImages
+  targets:
+  - rego: |
+      package k8strustedimages
+
+      images {
+        image := input.review.object.spec.containers[_].image
+        not startswith(image, "docker-fake.io/")
+        not startswith(image, "google-gcr-fake.com/")
+        not startswith(image, "very-bad-registry.com/") # ADD THIS LINE
+      }
+
+      violation[{"msg": msg}] {
+        not images
+        msg := "not trusted image!"
+      }
+    target: admission.k8s.gatekeeper.sh
+```
+
+- secure kubernetes dashboard
+	- change service of type NodePort to ClusterIP
+	- change following parameters
+```bash
+  template:
+    spec:
+      containers:
+      - args:
+        - --namespace=kubernetes-dashboard  
+        - --authentication-mode=token        # change or delete, "token" is default
+        - --auto-generate-certificates       # add
+        #- --enable-skip-login=true          # delete or set to false
+        #- --enable-insecure-login           # delete
+```
+
+- AppArmor and nodeSelector
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apparmor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apparmor
+  template:
+    metadata:
+      labels:
+        app: apparmor
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/c1: localhost/very-secure
+    spec:
+      nodeSelector:
+        security: apparmor
+```
+
+- check AppArmor profile
+```bash
+ssh node
+
+crictl pods | grep ${podname} # get pod id
+crictl ps -a | grep ${pod-id} # get container id
+crictl inspect ${container-id} | grep -i profile # get "apparmorProfile: "very-secure"
+```
+
+- runtimeClass & nodeName
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gvisor-test
+spec:
+  nodeName: cluster1-node2
+  runtimeClassName: gvisor
+  containers:
+  - image: nginx:1.19.2
+    name: gvisor-test
+```
+
+- read secrets from ETCD (ETCD in Kubernetes stores data under `/registry/{type}/{namespace}/{name}`)
+```bash
+# go to the controlplan
+ssh controlplane
+
+# get etcd connection infos
+cat /etc/kubernetes/manifests/kube-apiserver.yaml | grep etcd
+
+# read secrets from etcd
+ETCDCTL_API=3 etcdctl \
+--cert /etc/kubernetes/pki/apiserver-etcd-client.crt \
+--key /etc/kubernetes/pki/apiserver-etcd-client.key \
+--cacert /etc/kubernetes/pki/etcd/ca.crt get /registry/secrets/${namespace}/${secretname}
+```
+
+- curl kubernetes api with serviceaccount token
+```bash
+curl https://kubernetes.default/api/v1/namespaces/${namespace}/secrets/${secretname} -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" -k
 ```
