@@ -845,6 +845,12 @@ See [Supported Fields](https://falco.org/docs/reference/rules/supported-fields/)
 kill -1 $(cat /var/run/falco.pid)
 ```
 
+Search for Policy, which triggers the event:
+
+```bash
+grep -ir 'Package management process launched in container' /etc/falco/
+```
+
 ## Mutable vs Immutable Infrastructure
 
 - **Inplace Updates**: Infrastructure remains the same, software changes (Mutable Infrastructure) -> can lead to **Configuration Drifts** 
@@ -924,14 +930,8 @@ rules:
     resources: ["secrets"]
 ```
 
-Search for Policy, which triggers the event:
 
-```bash
-grep -ir 'Package management process launched in container' /etc/falco/
-```
-
-
-# KillserShell
+# KillerShell
 
 Some other snippets, learned through the CKS Simulator on [killer.sh](https://killer.sh/cks)
 
