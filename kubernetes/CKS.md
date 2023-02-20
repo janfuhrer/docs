@@ -147,6 +147,7 @@ readOnlyPort: 0
 
 ```bash
 # upgrade cluster with kubeadm
+ssh controlplane01
 apt-get upgrade kubeadm=1.26.0-00
 kubeadm upgrade plan
 
@@ -270,7 +271,7 @@ systemctl restart kubelet
 journalctl -fu kubelet | grep apiserver
 
 # Kubelet does launch API server, but it crashes immediately.
-# -> look into the logs
+# -> look into the pod logs
 crictl ps | grep api
 crictl logs <container-id>
 ```
@@ -930,6 +931,13 @@ rules:
     resources: ["secrets"]
 ```
 
+# Overview
+
+Comparison: [https://security.stackexchange.com/a/196888](https://security.stackexchange.com/a/196888 "https://security.stackexchange.com/a/196888")
+
+-   **Seccomp** reduces the chance that a kernel vulnerability will be successfully exploited.
+-   **AppArmor** prevents an application from accessing files it should not access.
+-   **Capability** dropping reduces the damage a compromised privileged process can do.
 
 # KillerShell
 
@@ -1131,3 +1139,101 @@ ETCDCTL_API=3 etcdctl \
 ```bash
 curl https://kubernetes.default/api/v1/namespaces/${namespace}/secrets/${secretname} -k -H "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" -k
 ```
+
+- find pod which uses syscall `kill`
+```bash
+# get node on wich the pods are scheduled
+kubectl get pods -o wide
+ssh node01
+
+# get container id from pod
+crictl ps | grep ${podname}
+
+# get args
+crictl insepct ${container-id} | grep -A2 args
+
+# get pid of process
+ps -aux | grep ${args}
+
+# strace on  pid, wait a couple of seconds
+strace -p ${pid}
+```
+
+- audit policy
+```yaml
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+
+# log Secret resources audits, level Metadata
+- level: Metadata
+  resources:
+  - group: ""
+    resources: ["secrets"]
+
+# log node related audits, level RequestResponse
+- level: RequestResponse
+  userGroups: ["system:nodes"]
+
+# for everything else don't log anything
+- level: None
+```
+
+```bash
+# check
+cat audit.log | tail | jq
+
+
+# shows Secret entries
+cat audit.log | grep '"resource":"secrets"' | wc -l
+
+# confirms Secret entries are only of level Metadata
+cat audit.log | grep '"resource":"secrets"' | grep -v '"level":"Metadata"' | wc -l
+
+# shows RequestResponse level entries
+cat audit.log | grep -v '"level":"RequestResponse"' | wc -l
+
+# shows RequestResponse level entries are only for system:nodes
+cat audit.log | grep '"level":"RequestResponse"' | grep -v "system:nodes" | wc -l
+```
+
+- investigate audit
+```bash
+# check if user p.auster had access to secret
+cat audit.log | grep "p.auster" | wc -l # 28
+cat audit.log | grep "p.auster" | grep Secret | wc -l # 2
+cat audit.log | grep "p.auster" | grep Secret | grep list | wc -l # 0
+cat audit.log | grep "p.auster" | grep Secret | grep get | wc -l # 2
+
+# inspect the actions
+cat audit.log | grep "p.auster" | grep Secret | grep get | jq
+```
+
+- security risks in Dockerfile
+	- Every command creates a new layer and every layer is persistet in the image.
+	- This means even if the file `secret-token` get's deleted in layer Z, it's still included with the image in layer X and Y. In this case it would be better to use for example variables passed to Docker.
+```
+# /opt/course/22/files/Dockerfile-mysql
+FROM ubuntu
+
+# Add MySQL configuration
+COPY my.cnf /etc/mysql/conf.d/my.cnf
+COPY mysqld_charset.cnf /etc/mysql/conf.d/mysqld_charset.cnf
+
+RUN apt-get update && \
+    apt-get -yq install mysql-server-5.6 &&
+
+# Add MySQL scripts
+COPY import_sql.sh /import_sql.sh
+COPY run.sh /run.sh
+
+# Configure credentials
+COPY secret-token .                                       # LAYER X
+RUN /etc/register.sh ./secret-token                       # LAYER Y
+RUN rm ./secret-token # delete secret token again         # LATER Z
+
+EXPOSE 3306
+CMD ["/run.sh"]
+```
+
+- security risk in deployment: don't expose secrets in environment variables, use secrets instead

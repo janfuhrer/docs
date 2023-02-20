@@ -8,7 +8,13 @@
 kubectl logs pod | less -r
 ```
 
-###  jstat
+### keytool
+
+```bash
+keytool -list -v -keystore keystore.jks
+```
+
+### jstat
 ```bash
 ps -ef | grep -i xmx
 
