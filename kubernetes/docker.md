@@ -1,5 +1,6 @@
 # docs: kubernetes/docker
 #kubernetes #docker
+
 ## dockerfile
 **best practices**
 - Each line in a Dockerfile creates a new layer -> combine commands by using `&&`

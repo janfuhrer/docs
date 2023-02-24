@@ -1,5 +1,6 @@
 # docs: macOS/snippets
 #macOS #snippets 
+
 ## some useful shortcuts
 ```bash
 ## git: https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git

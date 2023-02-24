@@ -1,3 +1,6 @@
+# docs: kubernetes/CKS
+#kubernetes #cks
+
 Various topics learned in the [CKS](https://training.linuxfoundation.org/certification/certified-kubernetes-security-specialist/) course.
 
 # Cluster Setup and Hardening

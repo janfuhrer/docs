@@ -1,5 +1,6 @@
 # docs: git/snippets
 #git #snippets 
+
 ## sign last N commits
 ```bash
 git rebase HEAD~3 --signoff
