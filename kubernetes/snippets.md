@@ -37,6 +37,16 @@ kubectl auth can-i get secret/${secretname} --as=system:serviceaccount:${namespa
 kubectl auth can-i get secrets --as=dev --as-group=${groupname} -n ${namespace}
 ```
 
+## create imagepullsecret
+see: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-by-providing-credentials-on-the-command-line
+
+```bash
+export USERNAME= #github username
+export TOKEN= #github token with read:packages right
+
+kubectl create secret docker-registry regcred --docker-server=ghcr.io --docker-username=${USERNAME} --docker-password=${TOKEN} --dry-run=client -o yaml
+```
+
 ## curl kubernetes api
 - example with ServiceAccount
 
@@ -83,14 +93,18 @@ kubectl get tenants.capsule.clastix.io ${TENANT_NAME} -o jsonpath='{.status.name
 
 Github: https://github.com/eldadru/ksniff
 
+- the pod maybe must run privileged (with flag `-p`)
+- wireshark has to be installed properly (see [[macOS/snippets#Wireshark]])
+- at the moment there is a [bug](https://github.com/eldadru/ksniff/issues/150), the kubeconfig may only have one cluster/context section
+
 ```bash
 # use right context
 kubectl config use-context ${k8s-context-name}
 
-# start local proxy
-proxyon
+# live sniffing
+KUBECONFIG=./config kubectl sniff -n ${namespace} ${pod}
 
-# start sniffing
+# start sniffing and redirect to file
 kubectl sniff -n ${namespace} ${pod} -o - > test.pcap
 
 # open Wireshark (not live preview)

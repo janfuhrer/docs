@@ -121,3 +121,15 @@ brew install ejson
 sudo mkdir -p /opt/ejson/keys
 sudo chown -R $(whoami) /opt/ejson
 ```
+
+### Wireshark
+
+```bash
+brew install --cask wireshark
+
+# for ksniff
+echo '#!/bin/sh
+exec /Applications/Wireshark.app/Contents/MacOS/Wireshark "$@"' > /usr/local/bin/wireshark
+
+chmod +x /usr/local/bin/wireshark
+```

@@ -112,3 +112,21 @@ use
 # kick a scan
 kics scan -p ${directory} --report-formats json -q ~/bin/kics/assets/queries
 ```
+
+# Gitrepository
+
+## trufflehog
+Github: https://github.com/trufflesecurity/trufflehog
+
+use with docker on local gitrepository
+```bash
+docker run --rm -v "$(pwd):/workdir" -i --rm trufflesecurity/trufflehog:latest git file:///workdir --since-commit HEAD --only-verified --fail
+```
+
+## Gitleaks
+Github: https://github.com/gitleaks/gitleaks
+
+run on local gitrepository
+```bash
+gitleaks detect -v
+```
