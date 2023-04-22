@@ -95,7 +95,7 @@ Github: https://github.com/eldadru/ksniff
 
 - the pod maybe must run privileged (with flag `-p`)
 - wireshark has to be installed properly (see [[macOS/snippets#Wireshark]])
-- at the moment there is a [bug](https://github.com/eldadru/ksniff/issues/150), the kubeconfig may only have one cluster/context section
+- ⚠️ at the moment there is a [bug](https://github.com/eldadru/ksniff/issues/150), the kubeconfig may only have one cluster/context section
 
 ```bash
 # use right context

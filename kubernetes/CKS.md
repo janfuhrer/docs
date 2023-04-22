@@ -824,7 +824,7 @@ Example Rule:
   output: Bash Shell Opened (user=%user.name container=%container.id)
   priority: WARNING
 - list: linux_shells
-  ietems: [bash, zsh, ksh, sh, csh]
+  items: [bash, zsh, ksh, sh, csh]
 - macro: container
   condition: container.id != host
 ```
