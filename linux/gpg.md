@@ -39,3 +39,16 @@ gpg --edit-key ${email}
 > 5
 > save
 ```
+
+## Verify signature
+
+```bash
+# import public key
+gpg --import pubkey.asc
+
+# export key to keyring
+gpg --output ./test.keyring --export 0x${FP_KEY}
+
+# verify a file
+gpgv --keyring=./test.keyring ${PACKAGE}.asc ${PACKAGE}
+```

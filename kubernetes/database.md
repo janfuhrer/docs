@@ -63,9 +63,9 @@ spec:
 commands
 ```bash
 # login
-sqlcmd -S ${hostname},${port} -U ${user} -P ${password}
+sqlcmd -S ${hostname},${port} -U ${user} -P ${password} -d ${database}
 
-# use database
+# use database (if not specified with -d)
 USE ${database};
 go
 

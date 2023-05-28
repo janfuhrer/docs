@@ -105,6 +105,16 @@ Example: `set expandtab tabstop=2 shiftwidth=2`
 sed -i '' 's/old/new/g' ${filename}
 ```
 
+- delete last 4 lines of every file in this directory (and subdirectory), wich contains "search-string"
+```bash
+grep -iRl "search-string" . | xargs -I {} sh -c "cat {} | tac | sed '1,4 d' | tac > {}.test && mv {}.test {}"
+```
+
+- rename every file `README.md.gotpl` to `README.md.gotmpl`
+```bash
+for f in ./**/README.md.gotpl; do mv "$f" "$(echo "$f" | sed s/gotpl/gotmpl/)"; done
+```
+
 ## hosts
 - lookup via hosts-file
 ```bash
