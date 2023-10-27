@@ -103,6 +103,12 @@ for f in ./**/README.md.gotpl; do mv "$f" "$(echo "$f" | sed s/gotpl/gotmpl/)"; 
 getent hosts $(hostname)
 ```
 
+## test port access
+
+```bash
+python3 -m http.server --bind 0.0.0.0 8080
+```
+
 ## extract deb file
 - extract to the current directory
 ```bash

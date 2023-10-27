@@ -5,6 +5,20 @@ tags: #linux #security #openssl
 links: [[100 Linux MOC|Linux MOC]] - [[400 Security MOC|Security MOC]] - [[000 Index|Index]]
 
 ---
+
+## Security/Server Side TLS
+
+- https://wiki.mozilla.org/Security/Server_Side_TLS
+- https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Protection_Cheat_Sheet.html
+- https://cipherlist.eu/
+- Nginx: https://kubernetes.github.io/ingress-nginx/deploy/hardening-guide/
+
+**Test**
+
+- https://www.ssllabs.com/ssltest/analyze.html
+- https://cryptcheck.fr/
+- https://testssl.sh
+
 ## DHparam
 
 - pre-compute a *safe prime* ($p=2q+1$) for the DH key exchange for every handshake with a client
@@ -12,8 +26,19 @@ links: [[100 Linux MOC|Linux MOC]] - [[400 Security MOC|Security MOC]] - [[000 I
 - finding such prime is really computational intense and has to be pre-computed
 - this parameter can be published (is sent out for every key-exchange)
 
+> The dhparam file contains the prime which defines the group for the DH key exchange. It is not a secret, and will be sent in clear during the key exchange, so there is no point in trying to keep it secret.
+
 ```bash
 openssl dhparam -out dhparam.pem 4096
+```
+
+## Decode/deserialise DHparam
+
+> [PEM](https://en.wikipedia.org/wiki/Privacy-Enhanced_Mail) files are base64-encoded [DER](https://en.wikipedia.org/wiki/X.690#DER_encoding) serialised [ASN.1](https://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One) files with a header and footer guard. A ASN.1 parser with the right schema can decode them.
+
+```bash
+# use openssl
+openssl asn1parse <dhparam.pem
 ```
 
 ## PKCS / X509

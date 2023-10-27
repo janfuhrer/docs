@@ -14,6 +14,12 @@ links: [[000 Index|Index]]
 - [[git]]
 - [[gpg]]
 - [[OpenSSL]]
+- [[sqlite]]
+- [[wireshark]]
+
+**docs**
+- [[dnssec]]
+- [[name-system]]
 
 ---
 links: [[000 Index|Index]]

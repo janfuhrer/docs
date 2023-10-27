@@ -2,7 +2,7 @@ tags: #iac #terraform
 
 # terraform
 
-links: [[500s IaC MOC|IaC MOC]] - [[000 Index|Index]]
+links: [[500 IaC MOC|IaC MOC]] - [[000 Index|Index]]
 
 ---
 
@@ -485,4 +485,4 @@ terraform workspace select ProjectB
 ```
 
 ---
-links: [[500s IaC MOC|IaC MOC]] - [[000 Index|Index]]
+links: [[500 IaC MOC|IaC MOC]] - [[000 Index|Index]]

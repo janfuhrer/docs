@@ -16,6 +16,7 @@ links: [[000 Index|Index]]
 - [[CRI]]
 - [[docker]]
 - [[OCI]]
+- [[dns-k8s]]
 
 **Security**
 - [[k8s-security-tools]]

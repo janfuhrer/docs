@@ -10,4 +10,12 @@ The Notes are based on the [[IMF Framework]] (get familiar with the concept firs
 200s - [[200 Programming Languages MOC]]
 300s - [[300 Kubernetes MOC]]
 400s - [[400 Security MOC]]
-500s - [[500s IaC MOC]]
+500s - [[500 IaC MOC]]
+
+### Main Keywords
+
+- 100s - #linux
+- 200s - #programming 
+- 300s - #kubernetes 
+- 400s - #security 
+- 500s - #iac 

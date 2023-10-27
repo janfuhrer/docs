@@ -9,6 +9,16 @@ links: [[300 Kubernetes MOC|Kubernetes MOC]] - [[000 Index|Index]]
 ## links
 - Prometheus Relabeler: https://relabeler.promlabs.com
 
+## kubectl custom search
+
+```bash
+# get key algorthm of ingress certificate
+kubectl get ingress -A -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name,KEY_ALGORITHM:.metadata.annotations.cert-manager\.io\/private-key-algorithm"
+
+# get ingress with configuration-snippet annotation
+kubectl get ingress -A -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name,CONFIG_SNIPPET:.metadata.annotations.nginx\.ingress\.kubernetes\.io\/configuration-snippet"
+```
+
 ## debug pod
 
 ```bash
