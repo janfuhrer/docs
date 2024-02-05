@@ -118,14 +118,49 @@ dpkg-deb -xv ${file.deb} .
 ## conda
 
 ```bash
-conda create --name bfh
+# create env
+conda create --name ${ENV}
 
+# get envs
 conda info --envs
 
-conda activate bfh
+# activate env
+conda activate ${ENV}
 
+# install pip 
+conda install -c anaconda pip
+
+# upgrade pip
+python3.12 -m pip install --upgrade pip
+
+# upgrade all packages
+pip --disable-pip-version-check list --outdated --format=json | python -c "import json, sys; print('\n'.join([x['name'] for x in json.load(sys.stdin)]))" | xargs -n1 pip install -U
+
+# install a python package in environment
 pip install flask
+
+# remove environment
+onda remove -n ${ENV} --all
 ```
+
+**Update python version**
+
+```bash
+conda activate ${ENV}
+
+# update to python 3.12
+conda install python=3.12
+
+# install module
+python3.12 -m pip show markupsafe
+
+# check module
+python3.12 -m pip show markupsafe
+
+# check that ansible use correct python version
+ansible --version
+```
+
 ## various
 ### password
 
